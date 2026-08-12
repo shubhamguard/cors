@@ -2,9 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CORS Exploit PoC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Misconfiguration - Proof of Concept</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f6f8;
+            margin: 0;
+            padding: 60px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-top: 0;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: #1f6feb;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .button:hover {
+            background: #1558b0;
+        }
+    </style>
 </head>
+
 <body>
-    <a href="https://ocean.medishout.co.uk/v1/users/me/?platform=web" target="_blank">Execute CORS Exploit</a>
+
+<div class="container">
+
+    <h1>CORS POC Exploit by Bulletproof</h1>
+
+    <p>
+        This page demonstrates the ability of an external origin to initiate
+        a request to the affected application endpoint using the browser's
+        authenticated session.
+    </p>
+
+    <a
+        class="button"
+        href="https://ocean.medishout.co.uk/v1/users/me/?platform=web"
+        target="_blank"
+        rel="noopener noreferrer">
+        Execute CORS PoC
+    </a>
+
+</div>
+
 </body>
 </html>
